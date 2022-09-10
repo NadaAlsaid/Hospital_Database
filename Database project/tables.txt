@@ -1,0 +1,570 @@
+CREATE TABLE DEPARTMENT
+(
+type_department VARCHAR2(30) ,
+dep_id NUMBER(20)  ,
+CONSTRAINT dep_pk PRIMARY KEY (dep_id)
+);
+
+CREATE TABLE DOCTOR (
+first_name VARCHAR2(30) ,
+minit_name VARCHAR2(30) ,
+last_name VARCHAR2(30) ,
+sex VARCHAR2(15) ,
+hire_date DATE ,
+salary NUMBER(10) ,
+ssn NUMBER(19) UNIQUE NOT NULL, 
+addres VARCHAR2(30) ,
+email VARCHAR2(40) UNIQUE NOT NULL ,
+phone NUMBER(20) UNIQUE NOT NULL,
+d_id NUMBER(20)  ,
+dep_id NUMBER(20) ,
+CONSTRAINT d_pk PRIMARY KEY (d_id) ,
+CONSTRAINT dep_fk FOREIGN KEY (dep_id) REFERENCES DEPARTMENT(dep_id)
+);
+
+
+CREATE TABLE Employee
+(
+name VARCHAR2(30),
+salary NUMBER(10),
+sex VARCHAR2(10),
+birth_date DATE,
+hire_date DATE,
+emp_ssn NUMBER(20) ,
+addres VARCHAR2(30),
+super_id NUMBER(20),
+dep_id NUMBER(20),
+CONSTRAINT essn_pk PRIMARY KEY(emp_ssn),
+CONSTRAINT super_fk FOREIGN KEY (super_id) REFERENCES Employee(emp_ssn),
+CONSTRAINT did_pk FOREIGN KEY (dep_id) REFERENCES DEPARTMENT (dep_id)
+);
+CREATE TABLE location_departmen (
+dep_id NUMBER(20),
+loc VARCHAR2(40),
+CONSTRAINT d1_pk PRIMARY KEY (dep_id,loc),
+CONSTRAINT d1_fk FOREIGN KEY (dep_id) REFERENCES DEPARTMENT(dep_id)
+);
+
+CREATE TABLE PHONE_DOCTOR
+(
+phone NUMBER(20) ,
+d_id NUMBER(10) ,
+CONSTRAINT docph_pk PRIMARY KEY (d_id,phone),
+CONSTRAINT d_id_fk FOREIGN KEY (d_id) REFERENCES Doctor(d_id)
+);
+CREATE TABLE OPERATION
+(
+op_type VARCHAR2(25),
+location_op VARCHAR2(25),
+op_id  NUMBER(20),
+op_date DATE,
+CONSTRAINT op_id_pk PRIMARY KEY (op_id)
+);
+CREATE TABLE BLOOD_BANK 
+(
+
+bl_id NUMBER (10),
+type_blood VARCHAR2(25),
+enter_date DATE,
+exit_date DATE,
+op_id NUMBER (20),
+CONSTRAINT bl_id_pk PRIMARY KEY (bl_id),
+CONSTRAINT op_id_fk FOREIGN KEY (op_id) REFERENCES OPERATION(op_id) 
+
+);
+
+CREATE TABLE ROOM
+(
+
+dep_id NUMBER (20),
+num_bed NUMBER (10),
+typer VARCHAR2(25),
+r_id NUMBER(10) ,
+CONSTRAINT rid_pk PRIMARY KEY (r_id),
+CONSTRAINT rid_fk FOREIGN KEY (r_id) REFERENCES department (dep_id)
+);
+
+CREATE TABLE DEVICES
+(
+ dev_id NUMBER(20),
+ number_device NUMBER(20), 
+ price NUMBER(20),
+ r_id NUMBER(10) NOT NULL,
+ CONSTRAINT dev_id_pk PRIMARY KEY (dev_id),
+ CONSTRAINT r_id_fk FOREIGN KEY (r_id) REFERENCEs ROOM(r_id)
+
+);
+
+CREATE TABLE NURSE
+(
+first_name VARCHAR2(25),
+minit_name VARCHAR2(25),
+last_name VARCHAR2(25),
+sex VARCHAR2(25),
+hire_date DATE,
+salary NUMBER (10),
+ssn NUMBER (10) NOT NULL UNIQUE,
+n_id NUMBER (10),
+phone NUMBER (10),
+dep_id NUMBER (20),
+d_id NUMBER (20),
+birth_date DATE,
+super_nurse_id NUMBER (10),
+CONSTRAINT nid_pk PRIMARY KEY (n_id),
+CONSTRAINT dep_id_fk FOREIGN KEY (dep_id) REFERENCES DEPARTMENT(dep_id) ,
+CONSTRAINT did_fk FOREIGN KEY (d_id) REFERENCES Doctor(d_id) ,
+CONSTRAINT super_id_fk FOREIGN KEY (super_nurse_id) REFERENCES NURSE(n_id) 
+);
+
+
+CREATE TABLE patron 
+(
+
+p_id NUMBER (20) NOT NULL,
+pat_phone NUMBER (11),
+name VARCHAR2(25),
+Relation VARCHAR2(10),
+pat_ssn NUMBER (20),
+
+CONSTRAINT pat_pk PRIMARY KEY (pat_ssn,p_id),
+CONSTRAINT pfk FOREIGN KEY (p_id) REFERENCES PATIENT(p_id)
+);
+CREATE TABLE OPERATE
+(
+ P_id NUMBER(20),
+ d_id NUMBER(20),
+ n_id NUMBER(10),
+op_id NUMBER(20),
+CONSTRAINT ope_pk PRIMARY KEY (p_id,d_id,n_id,op_id) ,
+CONSTRAINT do_fk FOREIGN KEY (d_id) REFERENCES DOCTOR (d_id) ,
+CONSTRAINT op_fk FOREIGN KEY (op_id) REFERENCES OPERATION(op_id) ,
+CONSTRAINT n_fk FOREIGN KEY (n_id) REFERENCES NURSE(n_id) ,
+CONSTRAINT p_fk FOREIGN KEY (p_id) REFERENCES PATIENT(p_id)
+);
+
+CREATE TABLE TREAT
+(
+
+p_id NUMBER (20),
+d_id NUMBER (20),
+CONSTRAINT dp_id_pk PRIMARY KEY (d_id,p_id),
+CONSTRAINT d1_id_fk FOREIGN KEY (d_id) REFERENCES DOCTOR (d_id),
+CONSTRAINT p1_id_fk FOREIGN KEY (p_id) REFERENCES PATIENT (p_id)
+
+);
+
+CREATE TABLE PATIENT
+(
+ first_name VARCHAR2(30),
+ minit_name VARCHAR2(30),
+ last_name VARCHAR2(30),
+ sex VARCHAR2(10),
+ ssn NUMBER(30) UNIQUE NOT NULL, 
+ enter_date DATE,
+ exit_date DATE,
+ p_id  NUMBER(20),
+ age NUMBER(20),
+ addres VARCHAR(30),
+ type_ill VARCHAR(30),
+ phone NUMBER(20) UNIQUE NOT NULL,
+ pat_ssn NUMBER(20),
+ r_id NUMBER(10) NOT NULL,
+ n_id NUMBER(10),
+ CONSTRAINT pat_id_pk PRIMARY KEY (p_id),
+ CONSTRAINT ro_id_fk FOREIGN KEY (r_id) REFERENCEs ROOM(r_id),
+  CONSTRAINT n_id_fk FOREIGN KEY (n_id) REFERENCEs nurse(n_id)
+);
+
+CREATE TABLE VISITOR
+(
+name VARCHAR2(25),
+relation VARCHAR2(25),
+date_visit DATE,
+v_ssn NUMBER (20),
+p_id NUMBER (20),
+CONSTRAINT v_ssn_pk PRIMARY KEY (v_ssn ,p_id),
+CONSTRAINT p_id_fk FOREIGN KEY (p_id) REFERENCES PATIENT (p_id) 
+ 
+);
+--insert code 
+create sequence d_id
+start with 1 
+increment by 1 
+maxvalue 50 ;
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+( d_id.nextval, 'Central Sterile Services' );
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+( d_id.nextval , 'Finance' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Accident_emergency' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'General Surgery' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Obstetrics/Gynecology' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Haematology' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Intensive Care Unit' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Human Resources' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Infection Control' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Maternity' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Medical Records' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Neonatal' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Nephrology' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Neurology' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Nutrition and Dietetics' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Oncology' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Ophthalmology' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Orthopaedics' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Otolaryngology' ); 
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Accounts' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Patient Services' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Physiotherapy' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Radiotherapy' ); 
+
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Radiology' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Urology' ); 
+
+insert into DEPARTMENT 
+(dep_id , type_department)
+values
+(  d_id.nextval, 'Gastroenterology' ); 
+
+create sequence doc_id
+start with 1 
+increment by 1 
+maxvalue 50 ;
+insert into doctor  
+values
+( 'Eman', 'emad-Elden' ,'Ali' , 'F' ,'01-jan-2021' ,3000,3020101164032,'tenth of ramadan','emanemad@gmail.com'   , doc_id.nextval , 17 ); 
+
+
+insert into doctor  
+values
+( 'Rowida', 'mahmoud' ,'maher' , 'F' ,'01-apr-2020' ,4000,3020817164232,'tenth of ramadan','rowidamahmoud@gmail.com'  , doc_id.nextval , 19 ); 
+
+insert into doctor  
+values
+( 'Ali', 'Adel' ,'Saleh' , 'M' ,'17-feb-2019' ,4500,30201217164452,'Cairo','aliadel@gmail.com'  , doc_id.nextval , 18 ); 
+insert into doctor  
+values
+( 'Yasmeen', 'Adel' ,'Hany' , 'F' ,'27-feb-2019' ,4500,30209119164452,'Cairo','yasmeenadel@gmail.com'  , 5 , 5 ); 
+insert into doctor  
+values
+( 'Adel', 'Glal' ,'said' , 'M' ,'27-feb-2017' ,4500,30202039164452,'tenth of ramadan','adelglal@gmail.com'   , 6 , 2 ); 
+insert into doctor  
+values
+( 'Glal', 'Adel' ,'Khaled' , 'M' ,'27-feb-2019' ,4500,30201829164452,'Cairo','glaladel@gmail.com'   , doc_id.nextval , 4 ); 
+
+
+insert into EMPLOYEE  
+values
+( 'Jana Mohamed', 2000, 'F' ,'31-jan-2000' ,'25-feb-2020' ,3020101164031,'Cairo' , null , 10 ); 
+
+
+insert into EMPLOYEE  
+values
+( 'Ali yousef', 3000, 'M' ,'17-feb-2001','30-jan-2021' ,30201217164496, 'Cairo' ,3020101164031 , 20 ); 
+
+insert into EMPLOYEE 
+values
+( 'yasser mostafa' ,3500, 'M' ,'20-oct-1999','10-Apr-2020' ,30201829164463,'Cairo', 30201217164496 , 5 );
+
+insert into EMPLOYEE 
+values
+( 'Noha Ahmed',2500,'F' ,'15-jun-1999' ,'30-mar-2019',3020817164235,'Giza' , 30201217164496 , 11 );
+
+insert into LOCATION_DEPARTMEN
+values
+(  20 , '1st floor' ); 
+
+
+insert into LOCATION_DEPARTMEN
+values
+(  11 ,  'ground floor '); 
+
+insert into LOCATION_DEPARTMEN
+values
+(  2 , '1st floor' );
+
+insert into  LOCATION_DEPARTMEN
+values
+(7 , ' 3rd floor '  );
+
+create sequence op_id
+start with 1 
+increment by 1 
+maxvalue 50 ;
+insert into OPERATION  
+values
+( 'Breast biopsy' ,'op_room1' ,op_id.nextval ,'15-jan-2021'  ); 
+insert into OPERATION  
+values
+( 'Appendectomy' ,'op_room7' ,op_id.nextval ,'01-may-2021'  );
+insert into OPERATION  
+values
+( 'Cataract surgery' ,'op_room15' ,op_id.nextval ,'07-dec-2021'  );
+insert into OPERATION  
+values
+( 'Appendectomy' ,'op_room11' ,op_id.nextval ,'01-dec-2021'  );
+insert into OPERATION  
+values
+( 'Coronary artery bypass' ,'op_room1' ,op_id.nextval ,'25-jun-2021'  );
+insert into OPERATION  
+values
+( 'Carotid endarterectomy' ,'op_room20' ,op_id.nextval ,'28-jul-2021'  );
+insert into OPERATION  
+values
+( 'Breast biopsy' ,'op_room2' ,op_id.nextval ,'08-jan-2021'  );
+insert into OPERATION  
+values
+( 'Cataract surgery' ,'op_room6' ,op_id.nextval ,'08-nov-2021'  );
+insert into OPERATION  
+values
+( 'Coronary artery bypass' ,'op_room7' ,op_id.nextval ,'08-nov-2021'  );
+
+create sequence   bl_id
+start with 1
+increment by 1 
+maxvalue 50 ;
+insert into   BLOOD_BANK
+values
+( bl_id.nextval ,'A' ,'15-jan-2021','16-jan-2021', 2 );
+insert into   BLOOD_BANK
+values
+( bl_id.nextval ,'AB' ,'10-may-2021','16-may-2021', 5);
+
+insert into   BLOOD_BANK
+values
+( bl_id.nextval ,'AB' ,'20-nov-2021','26-nov-2021', 7);
+
+insert into   BLOOD_BANK
+values
+( bl_id.nextval ,'o' ,'10-feb-2021','12-feb-2021', 4);
+
+insert into phone_doctor
+values
+(011470555,1);
+insert into phone_doctor
+values
+(010800585,2);
+insert into phone_doctor
+values
+(0124586924,3);
+insert into phone_doctor
+values
+(0151011485,4);
+
+
+insert into NURSE
+values
+('Ayat','mohamed','ahmed','F',' 05-jan-2019 ',2500,3020151160,4,01113042339,16,1,' 01-may-1995 ',null);
+insert into NURSE
+values
+('shama','hussein','mohamed','F',' 08-apr-2016 ',2200,2023331160,3,0111304050,18,2,' 01-jan-1998 ',null);
+insert into NURSE
+values
+('fady','ahmed','naser','M',' 11-feb-2014 ',3000,2025531148,2,01011446985,17,3,' 01-jan-1990 ',null);
+insert into NURSE
+values
+('Abdullah','ibrahim','mohamed','M',' 30-apr-2020 ',2100,2021559669,1,01211556015,5,4,'21-may-1993',null);
+
+create sequence r_id
+start with 1
+increment by 1
+maxvalue 50;
+insert into room 
+values
+(18,1,'single',r_id.nextval);
+insert into room 
+values
+(4,2,'double',r_id.nextval);
+insert into room 
+values
+(19,3,'double',r_id.nextval);
+insert into room 
+values
+(17,3,'double',r_id.nextval);
+
+CREATE sequence p_id
+start with 1
+increment by 1
+maxvalue 50;
+INSERT INTO PATIENT
+VALUES ('Nancy','Ahmed','Mohmed','F',123456789,'11-JAN-2021','15-JAN-2021',p_id.nextval,30,
+        'Cairo','Excess process',0105007006,382675733694,1,1);
+
+INSERT INTO PATIENT
+VALUES('Nesma','Farid','Mohmed','F',345091356,'1-FEB-2021','2-FEB-2021',p_id.nextval,15,'Cairo',
+       'Almond process',0111165745,8469327473632,2,2);
+       
+INSERT INTO PATIENT
+VALUES('Ahmed','Mohmed','Mostafa','M',868338434,'10-APR-2021','11-APR-2021',p_id.nextval,20,'Cairo',
+       'His leg is broken',0124635685,3446578252863,3,3);
+       
+INSERT INTO PATIENT
+VALUES('Mostafa','Ahmed','Waleed','M',5432385091,'10-OCT-2021','12-OCT-2021',p_id.nextval,21,'Giza',
+       'vision correction process',0117598494,432691345256,3,4);
+
+
+CREATE sequence dev_id
+start with 1
+increment by 1
+maxvalue 50;
+
+INSERT INTO DEVICES
+VALUES(dev_id.nextval,20,15000,1);
+
+INSERT INTO DEVICES
+VALUES(dev_id.nextval,30,16600,2);
+
+INSERT INTO DEVICES
+VALUES(dev_id.nextval,40,34400,3);
+
+INSERT INTO DEVICES
+VALUES(dev_id.nextval,50,37800,4);
+
+insert into patron
+values
+(2,01293487464,'mona','mother',8469327473632);
+insert into patron
+values
+(1,01148765342,'Ahmed','Husband',382675733694);
+insert into patron
+values
+(4,01039873456,'mouhammed','brother',432691345256);
+insert into patron
+values
+(3,01594873456,'Mohmed','father',3446578252863);
+
+INSERT INTO treat 
+values
+(1,1);
+INSERT INTO treat 
+values
+(2,3);
+INSERT INTO treat 
+values
+(3,4);
+INSERT INTO treat 
+values
+(4,2);
+
+INSERT INTO operate 
+values
+(3,4,1,8);
+INSERT INTO operate
+values
+(2,3,2,1);
+INSERT INTO operate
+values
+(3,4,1,3);
+INSERT INTO operate
+values
+(3,4,1,9);
+
+insert into   VISITOR
+values
+( ' Nehad Ahmed' ,'wife' ,'5-may-2021',3050148625317,2 );
+insert into   VISITOR
+values
+( 'Amany yasser ' ,'freind' ,'16-jul-2021',3405618631462,4 );
+insert into   VISITOR
+values
+( 'Mamdoh Mohmed ' ,'uncle' ,'12-aug-2021',2654235978213,1 );
+insert into   VISITOR
+values
+( 'Sabah abdulfatah ' ,'cousin' ,'6-dec-2021',2070562483152, 3);
